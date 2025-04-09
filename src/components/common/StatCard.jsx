@@ -16,4 +16,5 @@ const StatCard = ({ name, icon: Icon, value, color }) => {
 		</motion.div>
 	);
 };
+
 export default StatCard;
