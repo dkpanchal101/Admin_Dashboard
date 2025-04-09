@@ -1,8 +1,8 @@
 import { motion } from "framer-motion";
-import { Edit, Search, Trash2 } from "lucide-react";
+import { Edit, Search, Trash2, Plus } from "lucide-react";
 import { useState } from "react";
 
-const PRODUCT_DATA = [
+const initialProducts = [
 	{ id: 1, name: "Wireless Earbuds", category: "Electronics", price: 59.99, stock: 143, sales: 1200 },
 	{ id: 2, name: "Leather Wallet", category: "Accessories", price: 39.99, stock: 89, sales: 800 },
 	{ id: 3, name: "Smart Watch", category: "Electronics", price: 199.99, stock: 56, sales: 650 },
@@ -11,18 +11,46 @@ const PRODUCT_DATA = [
 ];
 
 const ProductsTable = () => {
+	const [products, setProducts] = useState(initialProducts);
 	const [searchTerm, setSearchTerm] = useState("");
-	const [filteredProducts, setFilteredProducts] = useState(PRODUCT_DATA);
+	const [editingProduct, setEditingProduct] = useState(null);
+	const [newProduct, setNewProduct] = useState({ name: "", category: "", price: "", stock: "", sales: "" });
 
 	const handleSearch = (e) => {
-		const term = e.target.value.toLowerCase();
-		setSearchTerm(term);
-		const filtered = PRODUCT_DATA.filter(
-			(product) => product.name.toLowerCase().includes(term) || product.category.toLowerCase().includes(term)
-		);
-
-		setFilteredProducts(filtered);
+		setSearchTerm(e.target.value.toLowerCase());
 	};
+
+	const handleDelete = (id) => {
+		setProducts(products.filter((product) => product.id !== id));
+	};
+
+	const handleEditChange = (e) => {
+		setEditingProduct({ ...editingProduct, [e.target.name]: e.target.value });
+	};
+
+	const saveEdit = () => {
+		setProducts(products.map((p) => (p.id === editingProduct.id ? editingProduct : p)));
+		setEditingProduct(null);
+	};
+
+	const handleAdd = () => {
+		if (!newProduct.name || !newProduct.category || !newProduct.price) return;
+		const newEntry = {
+			...newProduct,
+			id: Date.now(),
+			price: parseFloat(newProduct.price),
+			stock: parseInt(newProduct.stock),
+			sales: parseInt(newProduct.sales),
+		};
+		setProducts([...products, newEntry]);
+		setNewProduct({ name: "", category: "", price: "", stock: "", sales: "" });
+	};
+
+	const filteredProducts = products.filter(
+		(product) =>
+			product.name.toLowerCase().includes(searchTerm) ||
+			product.category.toLowerCase().includes(searchTerm)
+	);
 
 	return (
 		<motion.div
@@ -45,60 +73,56 @@ const ProductsTable = () => {
 				</div>
 			</div>
 
+			{/* Add New Product Form */}
+			<div className='mb-6 flex flex-wrap gap-4'>
+				<input type="text" name="name" placeholder="Name" value={newProduct.name} onChange={(e) => setNewProduct({ ...newProduct, name: e.target.value })} className="px-3 py-1 rounded bg-gray-700 text-white" />
+				<input type="text" name="category" placeholder="Category" value={newProduct.category} onChange={(e) => setNewProduct({ ...newProduct, category: e.target.value })} className="px-3 py-1 rounded bg-gray-700 text-white" />
+				<input type="number" name="price" placeholder="Price" value={newProduct.price} onChange={(e) => setNewProduct({ ...newProduct, price: e.target.value })} className="px-3 py-1 rounded bg-gray-700 text-white" />
+				<input type="number" name="stock" placeholder="Stock" value={newProduct.stock} onChange={(e) => setNewProduct({ ...newProduct, stock: e.target.value })} className="px-3 py-1 rounded bg-gray-700 text-white" />
+				<input type="number" name="sales" placeholder="Sales" value={newProduct.sales} onChange={(e) => setNewProduct({ ...newProduct, sales: e.target.value })} className="px-3 py-1 rounded bg-gray-700 text-white" />
+				<button onClick={handleAdd} className="text-white bg-green-600 px-3 py-1 rounded flex items-center gap-1"><Plus size={16}/>Add</button>
+			</div>
+
+			{/* Product Table */}
 			<div className='overflow-x-auto'>
 				<table className='min-w-full divide-y divide-gray-700'>
 					<thead>
 						<tr>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Name
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Category
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Price
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Stock
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Sales
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Actions
-							</th>
+							{["Name", "Category", "Price", "Stock", "Sales", "Actions"].map((title) => (
+								<th key={title} className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
+									{title}
+								</th>
+							))}
 						</tr>
 					</thead>
-
 					<tbody className='divide-y divide-gray-700'>
 						{filteredProducts.map((product) => (
-							<motion.tr
-								key={product.id}
-								initial={{ opacity: 0 }}
-								animate={{ opacity: 1 }}
-								transition={{ duration: 0.3 }}
-							>
-								<td className='px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-100 flex gap-2 items-center'>
-									{product.name}
-								</td>
-
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									{product.category}
-								</td>
-
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									${product.price.toFixed(2)}
-								</td>
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.stock}</td>
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>{product.sales}</td>
-								<td className='px-6 py-4 whitespace-nowrap text-sm text-gray-300'>
-									<button className='text-indigo-400 hover:text-indigo-300 mr-2'>
-										<Edit size={18} />
-									</button>
-									<button className='text-red-400 hover:text-red-300'>
-										<Trash2 size={18} />
-									</button>
-								</td>
+							<motion.tr key={product.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} transition={{ duration: 0.3 }}>
+								{editingProduct?.id === product.id ? (
+									<>
+										<td className='px-6 py-2'><input name="name" value={editingProduct.name} onChange={handleEditChange} className="bg-gray-700 text-white px-2 py-1 rounded w-full"/></td>
+										<td className='px-6 py-2'><input name="category" value={editingProduct.category} onChange={handleEditChange} className="bg-gray-700 text-white px-2 py-1 rounded w-full"/></td>
+										<td className='px-6 py-2'><input name="price" value={editingProduct.price} onChange={handleEditChange} type="number" className="bg-gray-700 text-white px-2 py-1 rounded w-full"/></td>
+										<td className='px-6 py-2'><input name="stock" value={editingProduct.stock} onChange={handleEditChange} type="number" className="bg-gray-700 text-white px-2 py-1 rounded w-full"/></td>
+										<td className='px-6 py-2'><input name="sales" value={editingProduct.sales} onChange={handleEditChange} type="number" className="bg-gray-700 text-white px-2 py-1 rounded w-full"/></td>
+										<td className='px-6 py-2 space-x-2'>
+											<button onClick={saveEdit} className="text-green-400 hover:text-green-300">Save</button>
+											<button onClick={() => setEditingProduct(null)} className="text-gray-400 hover:text-gray-300">Cancel</button>
+										</td>
+									</>
+								) : (
+									<>
+										<td className='px-6 py-4 text-sm font-medium text-gray-100'>{product.name}</td>
+										<td className='px-6 py-4 text-sm text-gray-300'>{product.category}</td>
+										<td className='px-6 py-4 text-sm text-gray-300'>${product.price.toFixed(2)}</td>
+										<td className='px-6 py-4 text-sm text-gray-300'>{product.stock}</td>
+										<td className='px-6 py-4 text-sm text-gray-300'>{product.sales}</td>
+										<td className='px-6 py-4 text-sm text-gray-300 space-x-2'>
+											<button onClick={() => setEditingProduct(product)} className='text-indigo-400 hover:text-indigo-300'><Edit size={18} /></button>
+											<button onClick={() => handleDelete(product.id)} className='text-red-400 hover:text-red-300'><Trash2 size={18} /></button>
+										</td>
+									</>
+								)}
 							</motion.tr>
 						))}
 					</tbody>
@@ -107,4 +131,5 @@ const ProductsTable = () => {
 		</motion.div>
 	);
 };
+
 export default ProductsTable;
