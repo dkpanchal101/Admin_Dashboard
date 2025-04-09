@@ -34,13 +34,13 @@ const ProductTable = ({ products, setProducts }) => {
 				prev.map((p) =>
 					p.id === editId
 						? {
-								...p,
-								name,
-								category,
-								price: parseFloat(price),
-								stock: parseInt(stock),
-								sales: parseInt(sales),
-						  }
+							...p,
+							name,
+							category,
+							price: parseFloat(price),
+							stock: parseInt(stock),
+							sales: parseInt(sales),
+						}
 						: p
 				)
 			);
@@ -128,9 +128,8 @@ const ProductTable = ({ products, setProducts }) => {
 				<div className='flex gap-2 mt-2'>
 					<button
 						onClick={handleAdd}
-						className={`${
-							editId !== null ? "bg-yellow-600" : "bg-green-600"
-						} px-4 py-2 text-white rounded`}
+						className={`${editId !== null ? "bg-yellow-600" : "bg-green-600"
+							} px-4 py-2 text-white rounded`}
 					>
 						{editId !== null ? "Save" : showForm ? "Add Product" : "+ Add"}
 					</button>
