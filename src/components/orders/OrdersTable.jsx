@@ -12,7 +12,46 @@ const initialData = [
 
 const OrdersTable = () => {
   const [orders, setOrders] = useState(initialData);
-  const [searchTerm, setSearchTerm] = useState("");
+  const [searchTerm, setSearchTerm] = useState("");const OrdersTable = ({ orders, setOrders }) => {
+    const [searchTerm, setSearchTerm] = useState("");
+    const [editingOrder, setEditingOrder] = useState(null);
+    const [showModal, setShowModal] = useState(false);
+  
+    const filteredOrders = orders.filter(
+      (order) =>
+        order.id.toLowerCase().includes(searchTerm.toLowerCase()) ||
+        order.customer.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  
+    const handleSave = () => {
+      if (editingOrder.id && orders.find((o) => o.id === editingOrder.id)) {
+        // Edit
+        setOrders((prev) =>
+          prev.map((o) => (o.id === editingOrder.id ? editingOrder : o))
+        );
+      } else {
+        // Add new
+        setOrders((prev) => [
+          ...prev,
+          {
+            ...editingOrder,
+            id: `ORD${String(prev.length + 1).padStart(3, "0")}`,
+          },
+        ]);
+      }
+      setShowModal(false);
+      setEditingOrder(null);
+    };
+  
+    const handleDelete = (id) => {
+      if (confirm("Are you sure you want to delete this order?")) {
+        setOrders((prev) => prev.filter((o) => o.id !== id));
+      }
+    };
+  
+    // ...rest of the component remains unchanged
+  };
+  
   const [editingOrder, setEditingOrder] = useState(null);
   const [showModal, setShowModal] = useState(false);
 
