@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
-import { Search } from "lucide-react";
+import StatsOverview from "../common/StatsOverview";
 
 const initialData = [
 	{ id: 1, name: "John Doe", email: "john@example.com", role: "Customer", status: "Active" },
@@ -59,26 +59,15 @@ const UsersTable = () => {
 
 	return (
 		<motion.div
-			className='bg-gray-800 bg-opacity-50 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
+			className='bg-gray-800 bg-opacity-50 mt-0 backdrop-blur-md shadow-lg rounded-xl p-6 border border-gray-700'
 			initial={{ opacity: 0, y: 20 }}
 			animate={{ opacity: 1, y: 0 }}
 			transition={{ delay: 0.2 }}
 		>
-			<div className='flex justify-between items-center mb-6'>
-				<h2 className='text-xl font-semibold text-gray-100'>Users</h2>
-				<div className='relative'>
-					<input
-						type='text'
-						placeholder='Search users...'
-						className='bg-gray-700 text-white placeholder-gray-400 rounded-lg pl-10 pr-4 py-2 focus:outline-none focus:ring-2 focus:ring-blue-500'
-						value={searchTerm}
-						onChange={handleSearch}
-					/>
-					<Search className='absolute left-3 top-2.5 text-gray-400' size={18} />
-				</div>
-			</div>
+			{/* Stat Cards Section */}
+			<StatsOverview users={users} />
 
-			{/* Add new user form */}
+			{/* Add New User Form */}
 			<div className='mb-6 grid grid-cols-1 md:grid-cols-4 gap-4'>
 				<input
 					type='text'
@@ -112,26 +101,16 @@ const UsersTable = () => {
 				</button>
 			</div>
 
-			{/* Users table */}
+			{/* Users Table */}
 			<div className='overflow-x-auto'>
 				<table className='min-w-full divide-y divide-gray-700'>
 					<thead>
 						<tr>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Name
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Email
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Role
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Status
-							</th>
-							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase tracking-wider'>
-								Actions
-							</th>
+							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase'>Name</th>
+							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase'>Email</th>
+							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase'>Role</th>
+							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase'>Status</th>
+							<th className='px-6 py-3 text-left text-xs font-medium text-gray-400 uppercase'>Actions</th>
 						</tr>
 					</thead>
 					<tbody className='divide-y divide-gray-700'>
