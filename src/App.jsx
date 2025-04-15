@@ -7,9 +7,10 @@ import ProductsPage from "./pages/ProductsPage";
 import UsersPage from "./pages/UsersPage";
 import SalesPage from "./pages/SalesPage";
 import OrderPage from "./pages/OrderPage";
-import Login from "./pages/Login";
+import Login from "./pages/LoginRegister";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import CalendarPage from "./pages/CalendarPage";
+import LoginRegister from "./pages/LoginRegister";
 
 function App() {
 	return (
@@ -30,7 +31,7 @@ function App() {
 				<Route path='/sales' element={<SalesPage />} />
 				<Route path='/orders' element={<OrderPage />} />
 				<Route path='/analytics' element={<AnalyticsPage />} />
-				<Route path="/Login" element={<Login />} />
+				<Route path="/Login" element={<LoginRegister />} />
 				
 			</Routes>
 		</div>

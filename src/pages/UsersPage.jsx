@@ -1,8 +1,6 @@
-import { UserCheck, UserPlus, UsersIcon, UserX } from "lucide-react";
 import { motion } from "framer-motion";
 
 import Header from "../components/common/Header";
-// import StatCard from "../components/common/StatCard";
 import UsersTable from "../components/users/UsersTable";
 import UserGrowthChart from "../components/users/UserGrowthChart";
 import UserActivityHeatmap from "../components/users/UserActivityHeatmap";
@@ -16,13 +14,13 @@ const userStats = {
 
 const UsersPage = () => {
 	return (
-		<div className='flex-1 overflow-auto relative z-10'>
+		<div className='flex-1 overflow-auto relative z-10 bg-gray-900'>
 			<Header title='Users' />
 
-			<main className='max-w-7xl mx-aut lg:px-8'>
+			<main className='max-w-7xl mx-aut lg:px-8 ml-12'>
 				{/* STATS */}
 				<motion.div
-					className='grid grid-cols-1 gap-5 sm:grid-cols-2 lg:grid-cols-4 mb-8'
+					className='grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4 mb-8'
 					initial={{ opacity: 0, y: 20 }}
 					animate={{ opacity: 1, y: 0 }}
 					transition={{ duration: 1 }}
@@ -30,7 +28,7 @@ const UsersPage = () => {
 				</motion.div>
 				<UsersTable />
 				{/* USER CHARTS */}
-				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-8'>
+				<div className='grid grid-cols-1 lg:grid-cols-2 gap-6 mt-6 mb-6'>
 					<UserGrowthChart />
 					<UserActivityHeatmap />
 				</div>

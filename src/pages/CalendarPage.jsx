@@ -1,9 +1,10 @@
 import { useState } from "react";
-import { Calendar, momentLocalizer } from "react-big-calendar";
+import { Calendar, momentLocalizer, Views } from "react-big-calendar";
 import moment from "moment";
 import "react-big-calendar/lib/css/react-big-calendar.css";
 import { motion, AnimatePresence } from "framer-motion";
 import Header from "../components/common/Header";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 
 const localizer = momentLocalizer(moment);
 
@@ -11,15 +12,18 @@ const CalendarPage = () => {
   const [events, setEvents] = useState([]);
   const [selectedSlot, setSelectedSlot] = useState(null);
   const [newTitle, setNewTitle] = useState("");
+  const [currentView, setCurrentView] = useState(Views.MONTH);
+  const [currentDate, setCurrentDate] = useState(new Date());
+  const [sidebarOpen, setSidebarOpen] = useState(true);
 
   const handleSelectSlot = (slotInfo) => {
     setSelectedSlot(slotInfo);
   };
 
   const handleAddEvent = () => {
-    if (newTitle && selectedSlot) {
+    if (newTitle.trim() && selectedSlot) {
       const newEvent = {
-        title: newTitle,
+        title: newTitle.trim(),
         start: selectedSlot.start,
         end: selectedSlot.end,
       };
@@ -35,23 +39,113 @@ const CalendarPage = () => {
     }
   };
 
+  const CustomToolbar = ({ label, onNavigate, onView }) => (
+    <div className="rbc-toolbar flex flex-col sm:flex-row items-start sm:items-center justify-between px-4 py-2 gap-3">
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => {
+            onNavigate("TODAY");
+            setCurrentDate(new Date());
+          }}
+          className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+        >
+          Today
+        </button>
+        <button
+          onClick={() => setSidebarOpen((prev) => !prev)}
+          className="bg-gray-700 hover:bg-gray-600 px-3 py-1 rounded"
+        >
+          {sidebarOpen ? "Hide Events" : "Show Events"}
+        </button>
+      </div>
+      <div className="text-xl font-semibold">{label}</div>
+      <div className="flex items-center gap-2">
+        <button
+          onClick={() => {
+            const newDate = moment(currentDate).subtract(1, currentView).toDate();
+            setCurrentDate(newDate);
+            onNavigate("PREV");
+          }}
+          className="bg-gray-700 hover:bg-gray-600 p-2 rounded"
+          title="Previous"
+        >
+          <ChevronLeft />
+        </button>
+        <button
+          onClick={() => {
+            const newDate = moment(currentDate).add(1, currentView).toDate();
+            setCurrentDate(newDate);
+            onNavigate("NEXT");
+          }}
+          className="bg-gray-700 hover:bg-gray-600 p-2 rounded"
+          title="Next"
+        >
+          <ChevronRight />
+        </button>
+        <select
+          onChange={(e) => {
+            const view = e.target.value;
+            onView(view);
+            setCurrentView(view);
+          }}
+          value={currentView}
+          className="bg-gray-700 text-white rounded px-2 py-1 ml-2"
+        >
+          <option value="month">Month</option>
+          <option value="week">Week</option>
+          <option value="day">Day</option>
+        </select>
+      </div>
+    </div>
+  );
+
   return (
-    <div className="flex-1 overflow-auto relative z-10 bg-gray-900 text-white">
+    <div className="flex-1 h-screen overflow-auto relative z-10 bg-gray-900 text-white">
       <Header title="Calendar" />
-      <div className="bg-gray-800 p-4 shadow-xl mt-0 mb-0">
-        <Calendar
-          localizer={localizer}
-          events={events}
-          selectable
-          defaultView="month"
-          defaultDate={new Date()}
-          min={new Date(1900, 0, 1)}
-          max={new Date(2100, 11, 31)}
-          onSelectSlot={handleSelectSlot}
-          onSelectEvent={handleSelectEvent}
-          style={{ height: "80vh" }}
-          className="custom-calendar text-white"
-        />
+
+      <div className="flex h-screen">
+        {/* Left Sidebar */}
+        {sidebarOpen && (
+          <div className="w-72 bg-gray-900 p-4 border-r border-gray-700 hidden sm:block">
+            <h2 className="text-lg font-semibold text-white mb-4">Events</h2>
+            {events.length === 0 ? (
+              <p className="text-gray-400">No events</p>
+            ) : (
+              events.map((event, idx) => (
+                <div
+                  key={idx}
+                  className="bg-green-400 text-black p-3 rounded mb-3 cursor-pointer hover:bg-green-500 transition"
+                  onClick={() => handleSelectEvent(event)}
+                >
+                  <div className="font-semibold">{event.title}</div>
+                  <div className="text-sm">
+                    {moment(event.start).format("MMM D, YYYY")}
+                  </div>
+                </div>
+              ))
+            )}
+          </div>
+        )}
+
+        {/* Calendar */}
+        <div className="flex-1 h-screen bg-gray-800 p-4 shadow-xl mt-0">
+          <Calendar
+            localizer={localizer}
+            events={events}
+            selectable
+            date={currentDate}
+            view={currentView}
+            onView={(view) => setCurrentView(view)}
+            onNavigate={(date) => setCurrentDate(date)}
+            min={new Date(1900, 0, 1)}
+            max={new Date(2100, 11, 31)}
+            onSelectSlot={handleSelectSlot}
+            onSelectEvent={handleSelectEvent}
+            components={{ toolbar: CustomToolbar }}
+            style={{ height: "80vh" }}
+            className="custom-calendar text-white"
+          />
+        </div>
       </div>
 
       {/* Sidebar for Add Event */}
@@ -123,8 +217,9 @@ const CalendarPage = () => {
           color: white;
         }
         .custom-calendar .rbc-event {
-          background-color: #6366f1;
+          background-color: #34d399;
           border: none;
+          color: black;
         }
         .custom-calendar .rbc-day-bg.rbc-today {
           background-color: #1e40af;
