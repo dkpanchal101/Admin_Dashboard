@@ -7,7 +7,6 @@ import ProductsPage from "./pages/ProductsPage";
 import UsersPage from "./pages/UsersPage";
 import SalesPage from "./pages/SalesPage";
 import OrderPage from "./pages/OrderPage";
-import Login from "./pages/LoginRegister";
 import AnalyticsPage from "./pages/AnalyticsPage";
 import CalendarPage from "./pages/CalendarPage";
 import LoginRegister from "./pages/LoginRegister";
@@ -24,7 +23,7 @@ function App() {
 			<Sidebar />
 			<Routes>
 
-				<Route path='/' element={<OverviewPage />} />
+				<Route path='/overview' element={<OverviewPage />} />
 				<Route path='/products' element={<ProductsPage />} />
 				<Route path="/calendar" element={<CalendarPage />} />
 				<Route path='/users' element={<UsersPage />} />

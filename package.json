@@ -1,5 +1,5 @@
 {
-  "homepage": "https://<your-github-username>.github.io/<Admin_Dashbboard>",
+  "homepage": "https://dkpanchal101.github.io/Admin_Dashboard",
   "name": "admin-dashbboard",
   "private": true,
   "version": "0.0.0",
@@ -10,7 +10,7 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "predeploy": "npm run build",
-    "deploy": "gh-pages -d build"
+    "deploy": "gh-pages -d dist"
   },
   "dependencies": {
     "@heroicons/react": "^2.2.0",
