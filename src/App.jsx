@@ -23,7 +23,7 @@ function App() {
 			<Sidebar />
 			<Routes>
 
-				<Route path='/overview' element={<OverviewPage />} />
+{/* 				<Route path='/overview' element={<OverviewPage />} /> */}
 				<Route path='/products' element={<ProductsPage />} />
 				<Route path="/calendar" element={<CalendarPage />} />
 				<Route path='/users' element={<UsersPage />} />
